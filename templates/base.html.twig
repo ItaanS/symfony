@@ -14,7 +14,14 @@
         {% endblock %}
     </head>
     <body>
+        {% block header %}
+
+        {% include "_navbar.html.twig" %}
+
+        {% endblock %}
+        
         {% block body %}
+        <img src="{{ asset('build/cat.jpg') }}" alt=""/>
         
         <h1> Bienvenue ! </h1>
         
