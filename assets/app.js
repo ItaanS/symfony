@@ -14,3 +14,6 @@ import './bootstrap';
 
 console.log('Hello Webpack Encore !')
 
+
+//call bootstrap JS
+require('bootstrap');
