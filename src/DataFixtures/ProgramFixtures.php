@@ -41,6 +41,12 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         $program->setCategory($this->getReference('category_Horreur'));
         $manager->persist($program);
 
+        $program = new Programm();
+        $program->setTitle('Demon Slayer');
+        $program->setSynopsis('Je souhiate me venger de Muzan !!');
+        $program->setCategory($this->getReference('category_Animation'));
+        $manager->persist($program);
+
         $manager->flush();
     }
 
