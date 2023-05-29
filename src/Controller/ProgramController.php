@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
+use App\Form\ProgramType;
+
 
 #[Route('/program/', name: 'program_', methods: ['GET'])]
 class ProgramController extends AbstractController
@@ -25,6 +28,26 @@ class ProgramController extends AbstractController
 
         return $this->render('program/index.html.twig', [
             'programs' => $programs
+        ]);
+    }
+
+    #[Route('new', name: 'new', methods: ['GET', 'POST'])]
+    public function new(Request $request, ProgrammRepository $programRepository)
+    {
+        $programm = new Programm();
+        $form = $this->createForm(ProgramType::class, $programm);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $programRepository->save($programm, true);
+
+            // Redirect to categories list
+            return $this->redirectToRoute('program_index');
+        }
+
+        // Render the form
+        return $this->render('program/new.html.twig', [
+            'form' => $form,
         ]);
     }
 
