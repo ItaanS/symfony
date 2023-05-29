@@ -3,56 +3,82 @@
 namespace App\DataFixtures;
 
 use App\Entity\Programm;
+use App\Entity\Season;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Faker\Factory;
 
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $manager): void
+
+    const PROG = [
+        1 => [
+            'title' => 'Walking Dead',
+            'synopsis' => 'Invasion de Zombies !!',
+            'category' => 'Action',
+            'year' => 2000,
+        ],
+        2 => [
+            'title' => 'Jujutsu Kaisen',
+            'synopsis' => 'Combat d exorcistes',
+            'category' => 'Animation',
+            'year' => 2020,
+        ],
+        3 => [
+            'title' => 'Titanic',
+            'synopsis' => 'Full flemm',
+            'category' => 'Fantastique',
+            'year' => 1998,
+        ],
+        4 => [
+            'title' => 'Moon Knight',
+            'synopsis' => 'Eveil d un dieu Egyptien.',
+            'category' => 'Aventure',
+            'year' => 2022,
+        ],
+        5 => [
+            'title' => 'World War Z',
+            'synopsis' => 'Invasion de Zombies, puissance 8',
+            'category' => 'Horreur',
+            'year' => 2013,
+        ],
+        6 => [
+            'title' => 'Demon Slayer',
+            'synopsis' => 'Je souhiate me venger de Muzan !!',
+            'category' => 'Animation',
+            'year' => 2019,
+        ],
+        7 => [
+            'title' => 'Arcane',
+            'synopsis' => 'Jinx la folle !',
+            'category' => 'Animation',
+            'year' => 2021,
+        ],
+
+    ];
+
+    public function load(ObjectManager $manager)
     {
-        $program = new Programm();
-        $program->setTitle('Walking Dead');
-        $program->setSynopsis('Invasion de Zombies !!');
-        $program->setCategory($this->getReference('category_Action'));
-        $manager->persist($program);
 
-        $program = new Programm();
-        $program->setTitle('Jujutsu Kaisen');
-        $program->setSynopsis('Combat d exorcistes');
-        $program->setCategory($this->getReference('category_Animation'));
-        $manager->persist($program);
+        foreach (self::PROG as $key => $values) {
 
-        $program = new Programm();
-        $program->setTitle('Titanic');
-        $program->setSynopsis('Full flemme');
-        $program->setCategory($this->getReference('category_Fantastique'));
-        $manager->persist($program);
-
-        $program = new Programm();
-        $program->setTitle('Moon Knight');
-        $program->setSynopsis('Eveil d un dieu Egyptien.');
-        $program->setCategory($this->getReference('category_Aventure'));
-        $manager->persist($program);
-
-        $program = new Programm();
-        $program->setTitle('World War Z');
-        $program->setSynopsis('Invasion de Zombies, puissance 8');
-        $program->setCategory($this->getReference('category_Horreur'));
-        $manager->persist($program);
-
-        $program = new Programm();
-        $program->setTitle('Demon Slayer');
-        $program->setSynopsis('Je souhiate me venger de Muzan !!');
-        $program->setCategory($this->getReference('category_Animation'));
-        $manager->persist($program);
+            $program = new Programm();
+            $program->setTitle($values['title']);
+            $program->setSynopsis($values['synopsis']);
+            $program->setYear($values['year']);
+            $program->setCategory($this->getReference('category_' . $values['category']));
+            $valuesTitle = $values['title'];
+            $manager->persist($program);
+            $this->addReference('program_' . $key, $program);
+        }
 
         $manager->flush();
     }
 
     public function getDependencies()
     {
-        return[
+        return [
             CategoryFixtures::class,
         ];
     }

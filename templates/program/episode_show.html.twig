@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Show EP {{ program.title }}{% endblock %}
+
+{% block body %}
+<pre>
+    {{ dump() }}
+</pre>
+<div class="media">
+    <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">
+    <div class="media-body">
+        <h1 class="mt-0">{{ program.title }}</h1>
+        <h2>Listes episodes</h2>
+        <h3> Saison : {{ season.number }} </h3>
+        {% for episode in season.episodes %}
+        <p> {{ episode.number }} / {{ episode.title }} </p>
+        <p> {{ episode.synopsis }} </p>
+        {% endfor %}
+    </div>
+</div>
+
+<a href="{{ path('program_index') }}">
+    Retour à la liste des programmes
+</a>
+{% endblock %}

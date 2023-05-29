@@ -1,8 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Catégorie {{ category.name }}{% endblock %}
+{% block title %} Catégorie lisefvazm {{ category.name }}{% endblock %}
 
 {% block body %}
+<pre>
+    {{ dump() }}
+</pre>
 
     <div class="media">
         <div class="media-body">
@@ -15,6 +18,7 @@
                 <h1 class="mt-0">{{ program.title }}</h1>
                 <p>{{ program.synopsis }}</p>
                 <p>Catégorie : {{ program.category.name }}</p>
+                <p> {{ program.id }} </p>
             </div>
         {% endfor %}
     
