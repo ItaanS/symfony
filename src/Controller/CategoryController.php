@@ -44,7 +44,8 @@ class CategoryController extends AbstractController
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid() ) {
+            // handle data, in example, an insert into database
             $categoryRepository->save($category, true);
 
             // Redirect to categories list

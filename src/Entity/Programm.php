@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProgrammRepository::class)]
+#[UniqueEntity('title')]
 class Programm
 {
     #[ORM\Id]
@@ -18,14 +21,20 @@ class Programm
 
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Ne m'oublie pas")]
+    #[Assert\Length(
+        max: 40,
+        maxMessage: "Titre trop long ..."
+    )]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: ' Je suis vide')]
     private ?string $synopsis = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $poster = null;
-    
+
     #[ORM\Column(nullable: true)]
     private ?int $year = null;
 

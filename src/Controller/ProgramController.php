@@ -38,7 +38,7 @@ class ProgramController extends AbstractController
         $form = $this->createForm(ProgramType::class, $programm);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid() ) {
             $programRepository->save($programm, true);
 
             // Redirect to categories list
