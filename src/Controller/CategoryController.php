@@ -48,6 +48,8 @@ class CategoryController extends AbstractController
             // handle data, in example, an insert into database
             $categoryRepository->save($category, true);
 
+            $this->addFlash('success', 'Nouvelle catégorie !!');
+
             // Redirect to categories list
             return $this->redirectToRoute('category_index');
         }
