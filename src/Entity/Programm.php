@@ -45,16 +45,29 @@ class Programm
     #[ORM\ManyToOne(inversedBy: 'programms')]
     private ?Category $category = null;
 
+    #[ORM\ManyToMany(targetEntity: Actor::class, mappedBy: 'programm')]
+    private Collection $actors;
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
 
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
+        $this->actors = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
     }
+
+    public function __toString(): string
+    {
+        return $this->getTitle(); // Remplacez `getTitle()` par la méthode appropriée qui renvoie le titre ou une autre représentation souhaitée de l'objet en tant que chaîne de caractères.
+    }
+
 
     public function getTitle(): ?string
     {
@@ -143,6 +156,45 @@ class Programm
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Actor>
+     */
+    public function getActors(): Collection
+    {
+        return $this->actors;
+    }
+
+    public function addActor(Actor $actor): self
+    {
+        if (!$this->actors->contains($actor)) {
+            $this->actors->add($actor);
+            $actor->addProgramm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActor(Actor $actor): self
+    {
+        if ($this->actors->removeElement($actor)) {
+            $actor->removeProgramm($this);
+        }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

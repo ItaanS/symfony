@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Episode;
 use App\Entity\Season;
 use App\Entity\Programm;
+use App\Entity\Actor;
 use App\Repository\EpisodeRepository;
 use App\Repository\ProgrammRepository;
 use App\Repository\SeasonRepository;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Form\ProgramType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use App\Service\ProgramDuration;
 
 
 #[Route('/program/', name: 'program_', methods: ['GET'])]
@@ -26,12 +29,13 @@ class ProgramController extends AbstractController
     public function index(ProgrammRepository $programRepository, RequestStack $requestStack): Response
     {
 
-        $session =$requestStack->getSession();
+        $session = $requestStack->getSession();
         if (!$session->has('total')) {
             $session->set('total', 0);
         }
         $total = $session->get('total');
         $programs = $programRepository->findAll();
+
 
         return $this->render('program/index.html.twig', [
             'programs' => $programs
@@ -39,16 +43,18 @@ class ProgramController extends AbstractController
     }
 
     #[Route('new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ProgrammRepository $programRepository)
+    public function new(Request $request, ProgrammRepository $programRepository, SluggerInterface $slugger)
     {
         $programm = new Programm();
         $form = $this->createForm(ProgramType::class, $programm);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() ) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugger->slug($programm->getTitle());
+            $programm->setSlug($slug);
             $programRepository->save($programm, true);
 
-            $this->addFlash('success', 'Nouveau programme est crée !');
+            $this->addFlash('success', 'Nouveau programme est crée !!');
 
             // Redirect to categories list
             return $this->redirectToRoute('program_index');
@@ -60,11 +66,12 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('{id}', requirements: ['id' => '\d+'], name: 'show', methods: ['GET'])]
-    public function show(Programm $programm): Response
+    #[Route('{slug}', requirements: ['page' => '\d+'], name: 'show', methods: ['GET'])]
+    public function show(Programm $programm, ProgramDuration $programDuration): Response
     {
         return $this->render('program/show.html.twig', [
-            'program' => $programm
+            'program' => $programm,
+            //'programDuration' => $programDuration->calculate($programm)
         ]);
     }
 
@@ -73,10 +80,6 @@ class ProgramController extends AbstractController
     #[ParamConverter('season', options: ['mapping' => ['seasonId' => 'id']])]
     public function showSeason(Programm $programm, Season $season)
     {
-
-        // $program = $programRepository->findOneBy(['id' => $programId]);
-        // $seasons = $seasonRepository->findOneBy(['id' => $seasonId]);
-
         return $this->render('program/season_show.html.twig', [
             'program' => $programm,
             'seasons' => $season
@@ -99,4 +102,11 @@ class ProgramController extends AbstractController
             'episode' => $episode
         ]);
     }
+
+    // function showActor(Actor $actor) 
+    // {
+    //     return $this->render('program/index.html.twig', [
+    //         'actor' => $actor
+    //     ]);
+    // }
 }

@@ -4,20 +4,27 @@
 
 {% block body %}
 <pre>
-    {{ dump() }}
+    {{ dump(program.actors) }}
 </pre>
 <div class="media">
-    <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">
+    {# <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster"> #}
     <div class="media-body">
         <h1>{{ program.title }}</h1>
-        <p>{{ program.synopsis }}</p>
-        <p>Catégorie : {{ program.category.name }}</p>
-        <p> {{ program.id }} </p>
-        <p>Saisons Disponibles !</p>
+        <p>syno <br>{{ program.synopsis }}</p>
+        <h2>Catégorie : {{ program.category.name }}</h2>
+        <p> Identifiant <br>{{ program.id }} </p>
+        <h2>Saisons Disponibles !</h2>
         {% for season in program.seasons %}
         <a href=" {{ path('program_season_show', { programId: program.id, seasonId: season.id}) }}">Saisons : {{
-            season.number }} <br> {{ season.description }} <br></a>
+            season.number }} <br> {#{{ season.description }}#} <br></a>
         {% endfor %}
+        <h2>Acteurs ..</h2>
+       
+        {% for serie in program.actors %}
+        <p> {{ serie.name }} </p>
+
+        {% endfor %}
+
     </div>
 </div>
 

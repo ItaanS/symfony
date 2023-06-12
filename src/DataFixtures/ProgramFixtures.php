@@ -8,6 +8,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Faker\Factory;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -58,6 +59,14 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
 
     ];
 
+
+    private SluggerInterface $slugger;
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
+
     public function load(ObjectManager $manager)
     {
 
@@ -69,6 +78,10 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             $program->setYear($values['year']);
             $program->setCategory($this->getReference('category_' . $values['category']));
             $valuesTitle = $values['title'];
+
+            $slug = $this->slugger->slug($program->getTitle());
+            $program->setSlug($slug);
+
             $manager->persist($program);
             $this->addReference('program_' . $key, $program);
         }
